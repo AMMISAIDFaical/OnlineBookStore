@@ -10,20 +10,17 @@ namespace BookCore
 {
     public class Book
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        
         public int Id { get; set; }
-        [Required]
-        [MaxLength(50)]    
         public string Title { get; set; }
         public string Publisher { get; set; }
         public string ISBN { get; set; }
-        [ForeignKey("Buyer_Id")]
-        public int Buyer_Id { get; set; }
-        public Buyer Buyer { get; set; }
-        [ForeignKey("Seller_Id ")]
-        public int Seller_Id { get; set; }
-        public Buyer Seller { get; set; }
+        [ForeignKey("BuyerId")]
+        public Buyer Buyer { set; get; }
+        public int BuyerId { set; get; }
+        [ForeignKey("SellerId")]
+        public Seller Seller  { set; get; }
+        public int SellerId { set; get; }
 
     }
 }

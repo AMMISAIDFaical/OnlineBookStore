@@ -1,7 +1,10 @@
 ﻿using BookCore;
 using BookData;
+using BookData.DTOs;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.EntityFrameworkCore;
 
 namespace OnlineBookStore.Controllers
 {
@@ -9,44 +12,75 @@ namespace OnlineBookStore.Controllers
     [ApiController]
     public class BookController : ControllerBase
     {
+        private readonly BookDbContext _context;
         private readonly IBook ibook;
 
-        public BookController(IBook _Ibook)
+        public BookController(BookDbContext context, IBook ibook)
         {
-            ibook = _Ibook;
+            _context = context;
+            this.ibook = ibook;
         }
+        
         // GET: api/<BookController>
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         [HttpGet]
-        public IActionResult GetBooks()
+        public async Task<IActionResult> GetBooks()
         {
-            var books =  ibook.GetBooks();
-            return Ok(books);
+            var books = await ibook.GetBooks();
+            return Ok(books);   
         }
 
         // GET api/<BookController>/5
         [HttpGet("{id}")]
-        public IActionResult GetBookById(int id)
+        public async Task<IActionResult> GetBookById(int id)
         {
-           var book = ibook.GetBook(id);
+            var book = ibook.GetBook(id);
             return Ok(book);
+        }
+
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Seller")]
+        [HttpGet("{seller_id},sellerBooks")]
+        public async Task<IActionResult> GetBooksBySeller(int seller_id)
+        {
+            var Sellerbooks = ibook.GetBooksBySeller(seller_id);
+            return Ok(Sellerbooks);
+        }   
+        
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Buyer")]
+        [HttpGet("{buyer_id},buyerBooks")]
+        public async Task<IActionResult> GetBooksByBuyer(int buyer_id)
+        {
+            var Buyerbooks = await ibook.GetBooksByBuyer(buyer_id);
+            return Ok(Buyerbooks);
         }
 
         // POST api/<BookController>
         [HttpPost]
-        public IActionResult AddBook([FromBody] Book book)
+        public async Task<IActionResult> AddBook([FromBody] BookDto book)
         {
-            ibook.AddBook(book);
-            ibook.Commit();
-            return CreatedAtAction("GetBooks", book);
+            if (ModelState.IsValid)
+            {
+                if (book.BuyerId != book.SellerId)
+                {
+                    ibook.AddBook(book);
+                    return CreatedAtAction("GetBooks", book.Id, book);
+                }
+                else
+                {
+                    return BadRequest("same buyer seller error");
+                }
+            } else
+            {
+                return BadRequest("wrong model");
+            }
         }
 
         // PUT api/<BookController>/5
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] Book new_book)
+        public IActionResult Put(int id, [FromBody] BookDto new_book)
         {
-            var old_book = ibook.UpdateBook(id, new_book);
-            return CreatedAtAction("GetBooks", old_book);
-
+            var old_book = ibook.UpdateBook(id,  new_book);
+            return CreatedAtAction("GetBooks", new_book.Id,new_book);
         }
 
         // DELETE api/<BookController>/5
@@ -54,7 +88,6 @@ namespace OnlineBookStore.Controllers
         public IActionResult Delete(int id)
         {
             var book = ibook.RemoveBook(id);
-            ibook.Commit();
             return Ok(book);
         }
     }

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookData.Migrations
 {
     [DbContext(typeof(BookDbContext))]
-    [Migration("20220803122409_SellBuyEditionMig")]
-    partial class SellBuyEditionMig
+    [Migration("20220814185925_mig3")]
+    partial class mig3
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -35,9 +35,6 @@ namespace BookData.Migrations
                     b.Property<int?>("BuyerId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Buyer_Id")
-                        .HasColumnType("int");
-
                     b.Property<string>("ISBN")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -49,13 +46,9 @@ namespace BookData.Migrations
                     b.Property<int?>("SellerId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Seller_Id")
-                        .HasColumnType("int");
-
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -64,26 +57,6 @@ namespace BookData.Migrations
                     b.HasIndex("SellerId");
 
                     b.ToTable("Book");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Buyer_Id = 1,
-                            ISBN = "111111111",
-                            Publisher = "PUB 1",
-                            Seller_Id = 1,
-                            Title = "BOOK 1"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Buyer_Id = 2,
-                            ISBN = "111111111",
-                            Publisher = "PUB 2",
-                            Seller_Id = 2,
-                            Title = "BOOK 2"
-                        });
                 });
 
             modelBuilder.Entity("BookCore.Buyer", b =>
@@ -97,9 +70,6 @@ namespace BookData.Migrations
                     b.Property<string>("Adress")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Book_Id")
-                        .HasColumnType("int");
 
                     b.Property<string>("City")
                         .IsRequired()
@@ -142,40 +112,6 @@ namespace BookData.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Buyers");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Adress = "chicago st 12",
-                            Book_Id = 1,
-                            City = "chicago",
-                            Country = "USA",
-                            Email_id = 1,
-                            First_name = "jimmy",
-                            Last_name = "butler",
-                            Password = "butlercode",
-                            Phone = "05632458",
-                            Ship_Adress = "cleveland",
-                            State = "chicago",
-                            ZipCode = 111
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Adress = "minisota st 22",
-                            Book_Id = 2,
-                            City = "minisota",
-                            Country = "USA",
-                            Email_id = 2,
-                            First_name = "zach",
-                            Last_name = "lavin",
-                            Password = "lavinecode",
-                            Phone = "05688499",
-                            Ship_Adress = "minisota",
-                            State = "minisota",
-                            ZipCode = 220
-                        });
                 });
 
             modelBuilder.Entity("BookCore.Seller", b =>
@@ -189,9 +125,6 @@ namespace BookData.Migrations
                     b.Property<string>("Adress")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Book_Id")
-                        .HasColumnType("int");
 
                     b.Property<string>("City")
                         .IsRequired()
@@ -233,61 +166,27 @@ namespace BookData.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Sellers");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Adress = "orelance st 22",
-                            Book_Id = 1,
-                            City = "orelance",
-                            Country = "USA",
-                            Discount = 0,
-                            Email_id = 1,
-                            First_name = "ball",
-                            Last_name = "lanzo",
-                            Password = "ballcode",
-                            Phone = "05900779",
-                            State = "orelance",
-                            ZipCode = 112
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Adress = "phonex st 22",
-                            Book_Id = 2,
-                            City = "phonex",
-                            Country = "USA",
-                            Discount = 0,
-                            Email_id = 2,
-                            First_name = "paul",
-                            Last_name = "chris",
-                            Password = "chriscode",
-                            Phone = "05998779",
-                            State = "phonex",
-                            ZipCode = 442
-                        });
                 });
 
             modelBuilder.Entity("BookCore.Book", b =>
                 {
                     b.HasOne("BookCore.Buyer", null)
-                        .WithMany("Books_toBuy")
+                        .WithMany("books")
                         .HasForeignKey("BuyerId");
 
                     b.HasOne("BookCore.Seller", null)
-                        .WithMany("Books_forSell")
+                        .WithMany("books")
                         .HasForeignKey("SellerId");
                 });
 
             modelBuilder.Entity("BookCore.Buyer", b =>
                 {
-                    b.Navigation("Books_toBuy");
+                    b.Navigation("books");
                 });
 
             modelBuilder.Entity("BookCore.Seller", b =>
                 {
-                    b.Navigation("Books_forSell");
+                    b.Navigation("books");
                 });
 #pragma warning restore 612, 618
         }

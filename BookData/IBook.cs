@@ -1,4 +1,5 @@
 ﻿using BookCore;
+using BookData.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,11 +10,15 @@ namespace BookData
 {
     public interface IBook
     {
-        IEnumerable<Book> GetBooks();
-        Book GetBook(int id);
-        void AddBook(Book book);
+        Task<List<Book>> GetBooks();
+        Task<Book> GetBook(int id);
+        Task<List<Book>> GetBooksBySeller(int seller_id);
+        Task<List<Book>> GetBooksByBuyer(int buyer_id);
+        Task <Book> GetBookByTitle(string title);
+        void AddBook(BookDto book);
         Book RemoveBook(int book);
-        Book UpdateBook(int id , Book book);
-        void Commit();
+        Book UpdateBook(int id , BookDto book);
+        Task Commit();
+         
     }
 }

@@ -1,4 +1,5 @@
 ﻿using BookCore;
+using BookData.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,16 +10,16 @@ namespace BookData
 {
     public interface IUser
     {
-        Buyer GetBuyerById(int id);
-        Seller GetSellerById(int id);
-        IEnumerable <Buyer> GetBuyers();
-        IEnumerable<Seller> GetSellers();
-        void AddBuyer (Buyer buyer);
-        void AddSeller (Seller seller);
-        void RemoveBuyer (Buyer buyer);
-        void RemoveSeller (Seller seller);
-        Buyer UpdateBuyer(int id, Buyer new_buyer);
-        Seller UpdateSeller(int id, Seller new_seller);
 
+        Task<List<Seller>> GetSellers();
+        Task <List<Buyer>> GetBuyers();
+        Task<Buyer> GetBuyerById(int id);
+        Task<Seller> GetSellerById(int id);
+        void AddBuyer (BuyerDto buyer);
+        void AddSeller (SellerDto seller);
+        Buyer RemoveBuyer (int buyer_id);
+        Seller RemoveSeller (int seller_id);
+        void Commit();
+        Task<Buyer> GetBuyerByAspUserId(string aspNetUser_id);
     }
 }
