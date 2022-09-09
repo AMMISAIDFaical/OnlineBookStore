@@ -4,7 +4,7 @@
 
 namespace BookData.Migrations
 {
-    public partial class migNullable : Migration
+    public partial class ageMig1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

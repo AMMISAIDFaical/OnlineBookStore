@@ -10,8 +10,8 @@ namespace BookData
 {
     public interface IBook
     {
-        Task<List<Book>> GetBooks();
-        Task<Book> GetBook(int id);
+        List<Book> GetBooks();
+        Book GetBook(int id);
         Task<List<Book>> GetBooksBySeller(int seller_id);
         Task<List<Book>> GetBooksByBuyer(int buyer_id);
         Task <Book> GetBookByTitle(string title);
@@ -19,6 +19,8 @@ namespace BookData
         Book RemoveBook(int book);
         Book UpdateBook(int id , BookDto book);
         Task Commit();
+        //void GetBookImage(Book book);
+        //void AddBookImage(Book book);   
          
     }
 }

@@ -14,7 +14,8 @@ namespace BookCore
         public int Id { get; set; }
         public ICollection<Book> ? books { set; get; }
         public string Ship_Adress { get; set; }
-        
-        
+        public int Age { get; set; }
+
+
     }
 }

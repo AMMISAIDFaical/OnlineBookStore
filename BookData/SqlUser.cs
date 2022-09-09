@@ -28,6 +28,7 @@ namespace BookData
                 buyerCore.First_name = buyer.First_name;
                 buyerCore.Last_name = buyer.Last_name;
                 buyerCore.AspUserId = buyer.AspUserId;
+                buyerCore.Age = buyer.Age;
                 await _context.Buyers.AddAsync(buyerCore);
                 await _context.SaveChangesAsync();
             }
@@ -61,6 +62,7 @@ namespace BookData
 
         public async Task<List<Buyer>> GetBuyers()
         {
+            var count = await _context.Buyers.CountAsync();
             var all_buyers =  await _context.Buyers.ToListAsync();
             return all_buyers;
         }

@@ -14,6 +14,7 @@ namespace BookData.DTOs
         public string First_name { get; set; }
         public string Last_name { get; set; }
         public string Adress { get; set; }
+        public int Age { get; set; }
         public string AspUserId { get; set; }
 
     }

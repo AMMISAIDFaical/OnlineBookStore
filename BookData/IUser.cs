@@ -12,7 +12,7 @@ namespace BookData
     {
 
         Task<List<Seller>> GetSellers();
-        Task <List<Buyer>> GetBuyers();
+        Task<List<Buyer>> GetBuyers();
         Task<Buyer> GetBuyerById(int id);
         Task<Seller> GetSellerById(int id);
         void AddBuyer (BuyerDto buyer);

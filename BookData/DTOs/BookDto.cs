@@ -10,9 +10,9 @@ namespace BookData.DTOs
     {
         public int Id { get; set; }
         public string Title { get; set; }
-        public string Publisher { get; set; }
+        public string  Publisher { get; set; }
         public string ISBN { get; set; }
-        public int BuyerId { set; get; }
+        public int  BuyerId { set; get; }
         public int SellerId { set; get; }
     }
 }

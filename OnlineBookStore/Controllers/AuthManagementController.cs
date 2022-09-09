@@ -43,13 +43,23 @@ namespace OnlineBookStore.Controllers
         }
 
         // GET: api/<AuthManagementController>
+   
         [HttpGet]
+        [Route("users")]
+        public IActionResult GetAllUsers()
+        {
+            var users = _userManger.Users.ToList();
+            return Ok(users);
+        }
+
+        [HttpGet]
+        [Route("roles")]
         public IActionResult GetAllRoles()
         {
             var roles = _roleManager.Roles.ToList();
             return Ok(roles);
         }
-        
+
         // POST api/<AuthManagementController> adding user to asp users table 
         [HttpPost]
         [Route("Register")]

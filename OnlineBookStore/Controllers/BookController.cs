@@ -24,15 +24,15 @@ namespace OnlineBookStore.Controllers
         // GET: api/<BookController>
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         [HttpGet]
-        public async Task<IActionResult> GetBooks()
-        {
-            var books = await ibook.GetBooks();
+        public IActionResult GetBooks()
+         {
+            var books = ibook.GetBooks();
             return Ok(books);   
         }
 
         // GET api/<BookController>/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetBookById(int id)
+        public IActionResult GetBookById(int id)
         {
             var book = ibook.GetBook(id);
             return Ok(book);
@@ -42,7 +42,7 @@ namespace OnlineBookStore.Controllers
         [HttpGet("{seller_id},sellerBooks")]
         public async Task<IActionResult> GetBooksBySeller(int seller_id)
         {
-            var Sellerbooks = ibook.GetBooksBySeller(seller_id);
+            var Sellerbooks = await ibook.GetBooksBySeller(seller_id);
             return Ok(Sellerbooks);
         }   
         
@@ -60,15 +60,8 @@ namespace OnlineBookStore.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (book.BuyerId != book.SellerId)
-                {
                     ibook.AddBook(book);
                     return CreatedAtAction("GetBooks", book.Id, book);
-                }
-                else
-                {
-                    return BadRequest("same buyer seller error");
-                }
             } else
             {
                 return BadRequest("wrong model");

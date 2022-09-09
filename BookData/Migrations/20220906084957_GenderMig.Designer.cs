@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookData.Migrations
 {
     [DbContext(typeof(BookDbContext))]
-    [Migration("20220822225510_ChangeEntitiesMigration2")]
-    partial class ChangeEntitiesMigration2
+    [Migration("20220906084957_GenderMig")]
+    partial class GenderMig
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -32,7 +32,13 @@ namespace BookData.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<int>("BookImageId")
+                        .HasColumnType("int");
+
                     b.Property<int>("BuyerId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CartId")
                         .HasColumnType("int");
 
                     b.Property<string>("ISBN")
@@ -52,11 +58,36 @@ namespace BookData.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("BookImageId");
+
                     b.HasIndex("BuyerId");
+
+                    b.HasIndex("CartId");
 
                     b.HasIndex("SellerId");
 
                     b.ToTable("Book");
+                });
+
+            modelBuilder.Entity("BookCore.BookImage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<byte[]>("ImageData")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("ImageTitle")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BookImage");
                 });
 
             modelBuilder.Entity("BookCore.Buyer", b =>
@@ -71,12 +102,19 @@ namespace BookData.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("AspUserId")
+                    b.Property<int>("Age")
                         .HasColumnType("int");
+
+                    b.Property<string>("AspUserId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("First_name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Gender")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(1)");
 
                     b.Property<string>("Last_name")
                         .IsRequired()
@@ -91,6 +129,24 @@ namespace BookData.Migrations
                     b.ToTable("Buyers");
                 });
 
+            modelBuilder.Entity("BookCore.Cart", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int?>("BuyerId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BuyerId");
+
+                    b.ToTable("Cart");
+                });
+
             modelBuilder.Entity("BookCore.Seller", b =>
                 {
                     b.Property<int>("Id")
@@ -103,8 +159,11 @@ namespace BookData.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("AspUserId")
+                    b.Property<int>("Age")
                         .HasColumnType("int");
+
+                    b.Property<string>("AspUserId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Discount")
                         .HasColumnType("int");
@@ -112,6 +171,10 @@ namespace BookData.Migrations
                     b.Property<string>("First_name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Gender")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(1)");
 
                     b.Property<string>("Last_name")
                         .IsRequired()
@@ -322,11 +385,21 @@ namespace BookData.Migrations
 
             modelBuilder.Entity("BookCore.Book", b =>
                 {
+                    b.HasOne("BookCore.BookImage", "BookImage")
+                        .WithMany()
+                        .HasForeignKey("BookImageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("BookCore.Buyer", "Buyer")
                         .WithMany("books")
                         .HasForeignKey("BuyerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("BookCore.Cart", "Cart")
+                        .WithMany("CartBook")
+                        .HasForeignKey("CartId");
 
                     b.HasOne("BookCore.Seller", "Seller")
                         .WithMany("books")
@@ -334,9 +407,22 @@ namespace BookData.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("BookImage");
+
                     b.Navigation("Buyer");
 
+                    b.Navigation("Cart");
+
                     b.Navigation("Seller");
+                });
+
+            modelBuilder.Entity("BookCore.Cart", b =>
+                {
+                    b.HasOne("BookCore.Buyer", "Buyer")
+                        .WithMany()
+                        .HasForeignKey("BuyerId");
+
+                    b.Navigation("Buyer");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -393,6 +479,11 @@ namespace BookData.Migrations
             modelBuilder.Entity("BookCore.Buyer", b =>
                 {
                     b.Navigation("books");
+                });
+
+            modelBuilder.Entity("BookCore.Cart", b =>
+                {
+                    b.Navigation("CartBook");
                 });
 
             modelBuilder.Entity("BookCore.Seller", b =>

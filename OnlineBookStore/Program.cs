@@ -14,7 +14,10 @@ var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 // Add services to the container.
 builder.Services.AddTransient<IBook, SqlBook>();
+builder.Services.AddTransient<ICart, SqlCart>();
 builder.Services.AddTransient<IUser, SqlUser>();
+
+
 builder.Services.AddDbContextPool<BookDbContext>(option =>
 {
     option.UseSqlServer(builder.Configuration.GetConnectionString("BookDb"));

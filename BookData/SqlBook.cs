@@ -12,21 +12,26 @@ namespace BookData
     public class SqlBook: IBook
     {
         private readonly BookDbContext _context;
+        private readonly IUser iuser;
 
-        public SqlBook(BookDbContext context)
+        public SqlBook(BookDbContext context, IUser iuser)
         {
             _context = context;
+            this.iuser = iuser;
         }
-        public async void AddBook(BookDto book)
+        public void AddBook(BookDto book)
         {
             Book bookCore = new Book();
             bookCore.Title = book.Title;
             bookCore.Publisher = book.Publisher;
             bookCore.ISBN = book.ISBN;
-            bookCore.BuyerId = book.BuyerId;
+            //default value buyer
+            bookCore.BuyerId = 5;
             bookCore.SellerId = book.SellerId;
-            await _context.Book.AddAsync(bookCore);
-            await _context.SaveChangesAsync();
+            //default value cart
+            bookCore.CartId = 4;
+            _context.Book.Add(bookCore);
+            _context.SaveChanges();
         }
 
         public async Task Commit()
@@ -34,9 +39,9 @@ namespace BookData
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Book> GetBook(int id)
+        public Book GetBook(int id)
         {
-            var book = await _context.Book.FirstOrDefaultAsync(b => b.Id == id);
+            var book =  _context.Book.FirstOrDefault(b => b.Id == id);
             return book;
         }
         
@@ -56,9 +61,10 @@ namespace BookData
             return book;
         }
 
-        public async Task<List<Book>> GetBooks()
+        public List<Book> GetBooks()
         {   
-            var books = await _context.Book.ToListAsync();
+            var books = _context.Book.ToList();
+            var number = books.Count();
             return books;
         }
 
@@ -103,7 +109,7 @@ namespace BookData
                 }
                 if (old_book.BuyerId != new_book.BuyerId)
                 {
-                    old_book.BuyerId = new_book.BuyerId;
+                    old_book.BuyerId = (int)new_book.BuyerId;
                 }
                  if (old_book.SellerId != new_book.SellerId)
                  {

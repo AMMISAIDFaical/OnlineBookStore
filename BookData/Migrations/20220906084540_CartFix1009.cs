@@ -4,7 +4,7 @@
 
 namespace BookData.Migrations
 {
-    public partial class ChangeEntitiesMigration3 : Migration
+    public partial class CartFix1009 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
